@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="fi-FI">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="scriptipokeri.css">
+
+    </head>
+    
+    <body style="background-color:#006400;">
+
+        <div class="content">
+        <h1 class="strokeme"> ScriptiPokeri</h1>
+        <div style="display: flex; justify-content: space-around">
+        <div style="justify-content: right;">
+        <button id="kolikkosyöttö" class="strokeme">Syötä kolikko(1)</button> 
+        <p id="kolikkomäärä" class="strokeme">0</p>
+        </div>
+        <div style="justify-content: right;">
+        <p class="strokeme">Voitot</p>
+        <p id="voittoteksti" class="strokeme">0</p>
+        </div>
+        <div style="justify-content: right;">
+        <p id="panosteksti" class="strokeme">Panos</p>
+        <p id="panosnäyttö" class="strokeme">0.2</p>
+        </div>
+        </div>
+
+        <div id="divvoitto" style="display: flex; justify-content: right " class="grid-container">
+            <div class="grid-child purple"style="display: flex; justify-content: left; padding: 70px 0;"><p id="voittoteksti2" class="strokeme" style="font-size:130%"></p> </div>
+            <div class="grid-child green" ><p id="voittotaulukko" class="strokeme">Voittotaulukko</p></div>
+            
+        </div>
+        <br>
+        <!--
+        <div style="display: flex; justify-content: space-between;">
+            <p id="kortti0">kortti0</p>
+            <p id="kortti1">kortti1</p>
+            <p id="kortti2">kortti2</p>
+            <p id="kortti3">kortti3</p>
+            <p id="kortti4">kortti4</p>
+            <br>
+            
+          </div>
+          -->
+          <!--  korttien grafiikka Kenny Yip Coding youtube   -->
+          <div id="kortitkuvat" style="display: flex; justify-content: space-between;">
+            <img id="kuva0" src="./cards/BACK.png">
+            <img id="kuva1" src="./cards/BACK.png">
+            <img id="kuva2" src="./cards/BACK.png">
+            <img id="kuva3" src="./cards/BACK.png">
+            <img id="kuva4" src="./cards/BACK.png">
+
+          </div>
+
+        <br>
+        <div style="display: flex; justify-content: space-between;">
+            <button id="nappi0">Lukitse</button>
+            <button id="nappi1">Lukitse</button>
+            <button id="nappi2">Lukitse</button>
+            <button id="nappi3">Lukitse</button>
+            <button id="nappi4">Lukitse</button>
+        </div>
+        <p>  </p>
+        <div style="display: flex; justify-content: space-between;">
+            <button id="nappijatka">Pelaa</button>
+            <!--<button id="nappijatka2">jatka2</button>-- en tarvitse enää ehkä, varalta koodissa-->
+            <button id="panosnappi">PANOS</button>
+        </div>
+        <br>
+        
+     <!--tämä div contentille-->
+    </div>
+    <!--tässä äänitiedostot-->
+    <audio id="voittoaudio">
+        <source src="./aanet/voitto.wav">
+    </audio>
+
+    <audio id="rahaaudio">
+        <source src="./aanet/raha.wav">
+    </audio>
+
+    <audio id="bgmaudio">
+        <source src="./aanet/bgm.wav">
+    </audio>
+
+    <audio id="panosaudio">
+        <source src="./aanet/panos.wav">
+    </audio>
+
+        <script>
+            console.log("Hello world from javascript!");
+            //
+            // Miten suunnitellaan?
+
+            // YLÄTASON SUUNNITTELU
+
+            // 1. Visio eli mitä ollaan tekemässä? (suomeksi johtotähti)
+            // Tämä on AINA ensimmäinen kysymys!
+            // Mitä yleensä halutaan saada aikaan...
+
+            //Classinen marketeissa pyörinyt pokerimasiina, (tai osa siitä)
+            //Pelaajalle annetaan 5 korttia. Pelaaja valitsee haluamansa kortit, muut kortit vaihdetaan kädestä.
+            //Kortit eivät saa olla samoja käden ja poistopakan kanssa.
+                        //pitääkö kortit eka poistaa arraysta, yksittäsiksi elementeiksi?
+                        //sitten lukitaan halutut kortit
+                        // lukitut kortit laitetaan uuteen arrayhin, johon lisätään kortit
+                        //poistetut kortit uuteen arreyhin
+
+
+            //Rakennetaan voittolista, pari, kaksiparia, kolmoset, kolmoset ja pari, neloset, suora, värisuora, väri (muita?)
+            //Verrataan käden kortteja voittolistaan
+
+            //Bonus, kaunis käyttöliittymä, rahan syöttö/ulos otto, rahan syöttö voittojen puolelta, panos(jonkinlainen kertominen voitoille), äänet?,
+            // tummanvihreä tausta, valkoiset kirjaimet mustilla rajoilla
+            // pelaus rahan maksaminen voittopussista,
+
+            // 2. Suunnittelu yleistasolla
+            // Lähestymistapoja on yleensä kaksi:
+            // a) käyttöliittymä eli mitä käyttäjä tekee?
+
+            //aluksi 6 nappia, 5 lukitse nappia, yksi jatka nappi
+            //(lisää nappeja toiminnallisuuden edetessä)
+            //nappien päällä näkyy kortin arvot/maat
+            //nappien päällä näkyy onko kortti lukittu
+            //voitto summan ruutu
+
+            // b) data eli mitä halutaan kerätä/jalostaa/tallettaa?
+            // Tavoite on aina että tiedetään mitä tehdään missäkin vaiheessa
+
+            //korttipakka
+            //pelaajan käsi
+            //poisto pakka
+            //voitot
+
+            // 3. Käyttäjän toiminta ja yleinen "use case"
+            // use case sanoo mitä käyttäjä tekee
+            // Tällöin nähdään ohjelman toiminnnan askeleet
+
+            // ALATASON SUUNNITTELU
+            
+            // 4. Mieti ohjelmarunko
+            // Yleensä kannattaa ohjelmoida aina samalla tavalla
+            // Koodari ja/tai yrityskohtainen asia
+            // Esimerkiksi:
+            // Kirjastot ja Modulit
+            // Vakiot
+            // Muuttujat
+            let korttipakka = [];
+            let pelaajankäsi = [];
+            let poistopakka = [];
+            let voitot = 0;
+            let voittokäsi=[]  //lopullinen käsi ja 
+
+            let randomkortti = [];
+            let sama = false;
+
+            let lukko0=false;
+            let lukko1=false;
+            let lukko2=false;
+            let lukko3=false;
+            let lukko4=false;
+
+            let kortti0arvo = 0;
+            let kortti1arvo = 1;
+            let kortti2arvo = 2;
+            let kortti3arvo = 3;
+            let kortti4arvo = 4;
+
+            const voittopari = 1;
+            const voittokolmoset = 2;
+            const voittokaksiparia = 2;
+            const voittotäyskäsi = 5;
+            const voittoneloset = 3;
+            const voittoväri = 3;
+            const voittosuora = 5;
+            const voittovärisuora = 20;
+
+            let panos = 0.2;
+            let syötettyraha = 0;
+            
+            let kierros = 0;
+
+            let piste=0;
+            /* testihommia
+            const myArray = ['a', 'b', 'c', 'c', 'b', 'd'];
+            const elementCounts = {};*/
+            let duplikaatti={};       
+            let pari= 0;
+            let kolmoset=0;
+            let neloset=0;
+
+
+
+
+
+            // Konteksti näytön ja koodin välillä
+            const kortti0 = document.getElementById("kortti0");
+            const kortti1 = document.getElementById("kortti1");
+            const kortti2 = document.getElementById("kortti2");
+            const kortti3 = document.getElementById("kortti3");
+            const kortti4 = document.getElementById("kortti4");
+            const kuva0 = document.getElementById("kuva0");
+            const kuva1 = document.getElementById("kuva1");
+            const kuva2 = document.getElementById("kuva2");
+            const kuva3 = document.getElementById("kuva3");
+            const kuva4 = document.getElementById("kuva4");
+
+            const voittoteksti = document.getElementById("voittoteksti");
+            const voittoteksti2 = document.getElementById("voittoteksti2");
+            const voittotaulukko = document.getElementById("voittotaulukko");
+            const panosnäyttö = document.getElementById("panosnäyttö");
+            const kolikkomäärä = document.getElementById("kolikkomäärä")
+
+
+            const kolikkosyöttö= document.getElementById("kolikkosyöttö");
+            const nappi0 = document.getElementById("nappi0");
+            const nappi1 = document.getElementById("nappi1");
+            const nappi2 = document.getElementById("nappi2");
+            const nappi3 = document.getElementById("nappi3");
+            const nappi4 = document.getElementById("nappi4");
+            const nappijatka = document.getElementById("nappijatka");
+            //testi nappi, myöhemmin 1 namiskaa painamalla peli jatkuu
+            //const nappijatka2 = document.getElementById("nappijatka2");
+            //Buttonit ja näytöt tänne!!
+            const panosnappi = document.getElementById("panosnappi")
+
+            //äänet
+            let voittoaudio = document.getElementById("voittoaudio");
+            let bgmaudio = document.getElementById("bgmaudio");
+            let rahaaudio = document.getElementById("rahaaudio");
+            let panosaudio = document.getElementById("panosaudio");
+            // Luokat ja Oliot
+
+            class Kortti {
+                constructor(arvo,maa) {
+                    this.arvo = arvo;
+                    this.maa = maa;
+                }
+
+                korttitieto() {
+                    let dummymaa = "";
+                    switch(this.maa) {
+                        case 0:
+                            dummymaa = "risti";
+                        break;
+                        case 1:
+                            dummymaa = "ruutu";
+                        break;
+                        case 2:
+                            dummymaa = "pata";
+                        break;
+                        case 3:
+                            dummymaa = "hertta";
+                        break;
+                    }
+                    let dummyarvo = String(this.arvo);
+                    if (dummyarvo === "1") { dummyarvo="A"; }
+                    if (dummyarvo === "11") { dummyarvo="J"; }
+                    if (dummyarvo === "12") { dummyarvo="Q"; }
+                    if (dummyarvo === "13") { dummyarvo="K"; }
+                    return `${dummymaa} ${dummyarvo}`;
+                }
+            }
+
+            // Funktiot
+            //aikaisemmin tehdyn ventin haekortti funktio
+            function haekorttipakasta() {
+                return Math.floor(Math.random() * korttipakka.length);
+            }
+            //koko käden muodostus 
+            function muodostakäsi(){
+            while (pelaajankäsi.length<5){
+                //hae kortti
+                randomkortti = haekorttipakasta();
+                //katso onko kortti sama
+                for (let arvo in pelaajankäsi){
+                    if (pelaajankäsi[arvo]==randomkortti){
+                        console.log("Sama tarkistus käyty katsomassa")
+                        sama = true;
+                        break;
+                    }
+  
+                }
+                //ONKO kortti sama kuin poistopakassa
+                for (let arvo in poistopakka){
+                    if (poistopakka[arvo]==randomkortti){
+                        console.log("Sama tarkistus käyty katsomassa")
+                        sama = true;
+                        break;
+                    }
+  
+                }
+                     //oliko samanlainen kortti?
+                if (sama===false){
+                    pelaajankäsi.push(randomkortti);
+                }
+                    //nollaa samannumeron chekins
+                else{
+                    sama=false;
+                }
+                
+            }
+            }
+
+            //näytetään kortit teksteinä+
+            function kortinnäyttö(){
+            kortti0arvo = pelaajankäsi[0];
+            //kortti0.innerText=korttipakka[kortti0arvo].korttitieto();
+            //console.log(korttipakka[kortti0arvo].korttitieto());
+            //console.log("Korttinäyttö---------------------------")
+            kuva0.src="./cards/"+korttipakka[kortti0arvo].korttitieto()+".png";
+            //console.log("./cards/"+korttipakka[kortti0arvo].korttitieto()+".png");
+            kortti1arvo = pelaajankäsi[1];
+            //kortti1.innerText=korttipakka[kortti1arvo].korttitieto();
+            kuva1.src="./cards/"+korttipakka[kortti1arvo].korttitieto()+".png";
+            kortti2arvo = pelaajankäsi[2];
+            //kortti2.innerText=korttipakka[kortti2arvo].korttitieto();
+            kuva2.src="./cards/"+korttipakka[kortti2arvo].korttitieto()+".png";
+            kortti3arvo = pelaajankäsi[3];
+            //kortti3.innerText=korttipakka[kortti3arvo].korttitieto();
+            kuva3.src="./cards/"+korttipakka[kortti3arvo].korttitieto()+".png";
+            kortti4arvo = pelaajankäsi[4];
+            //kortti4.innerText=korttipakka[kortti4arvo].korttitieto();
+            kuva4.src="./cards/"+korttipakka[kortti4arvo].korttitieto()+".png";
+            }
+            //tehdään käsi vielä kerran nyt olioina, että voin tarkastella olioiden arvoja. 
+            //En tuhoa numero kättä koska voin tarvita sitä vielä.(ehkä)
+            function voittokädenteko(){
+            kortti0arvo = pelaajankäsi[0];
+            voittokäsi.push(korttipakka[kortti0arvo]);
+            kortti1arvo = pelaajankäsi[1];
+            voittokäsi.push(korttipakka[kortti1arvo]);
+            kortti2arvo = pelaajankäsi[2];
+            voittokäsi.push(korttipakka[kortti2arvo]);
+            kortti3arvo = pelaajankäsi[3];
+            voittokäsi.push(korttipakka[kortti3arvo]);
+            kortti4arvo = pelaajankäsi[4];
+            voittokäsi.push(korttipakka[kortti4arvo]);
+            console.log(voittokäsi);
+            }
+
+            let kortti0arvonumero;
+            let kortti0maanumero;
+
+            //nopea funktio että osaanko lukea kortteja
+            function kortinluku(){
+                kortti0arvonumero= korttipakka[kortti0arvo].arvo;
+                kortti0maanumero=korttipakka[kortti0arvo].maa;
+                console.log("KORTTI LUETTU-----")
+                console.log(kortti0arvonumero);
+                console.log(kortti0maanumero);
+            }
+            function panoksenlisääminen(){
+                console.log("Panosfunktio alkoi")
+                if (panos<1&&syötettyraha-(panos+0.2)>=0){
+                    console.log(syötettyraha);
+                    panos += 0.20;
+                    playAudio(panosaudio)
+                }
+                else{panos=0.2}
+            }
+
+            //voiton tarkistus
+            //kortit todennäköisesti täytyy järjestää suoran tutkimiseen ja tehdä joku a=b-1=c-2=d-3=e-4 || b=c-1=d-2=e-3=a+9 (ässä14)???
+            //kopioitu koodin tutkiminen kuinka toimii
+            //jahas en oikee ymmärrä kuinka se käytännössä toimii, 
+            //tekijä: Ege Özcan
+            function dynamicSort(property) {
+                            var sortOrder = 1;
+                        if(property[0] === "-") {
+                    sortOrder = -1;
+                    property = property.substr(1);
+                            }
+                        return function (a,b) {
+                    /* next line works with strings and numbers, 
+                    * and you may want to customize it to your needs
+                    */
+                    var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+                    return result * sortOrder;
+                }
+                }
+                    function dynamicSortMultiple() {
+                    /*
+                        * save the arguments object as it will be overwritten
+                        * note that arguments object is an array-like object
+                        * consisting of the names of the properties to sort by
+                        */
+                        var props = arguments;
+                        return function (obj1, obj2) {
+                        var i = 0, result = 0, numberOfProperties = props.length;
+                        /* try getting a different result from 0 (equal)
+                        * as long as we have extra properties to compare
+                        */
+                        while(result === 0 && i < numberOfProperties) {
+                        result = dynamicSort(props[i])(obj1, obj2);
+                        i++;
+                        }
+                        return result;
+                        }
+                    }
+
+           
+
+            //tarkistetaan lukko ja poistetaan kortin arvo,???? tehdään uusi array??
+            function kortinpoisto(){
+                pelaajankäsi = []
+                if (lukko0==false){
+                    poistopakka.push(kortti0arvo);
+                    kortti0arvo= null;
+                }
+                else{
+                    pelaajankäsi.push(kortti0arvo);
+                }
+                if (lukko1==false){
+                    poistopakka.push(kortti1arvo);
+                    kortti1arvo= null;
+                }
+                else{
+                    pelaajankäsi.push(kortti1arvo);
+                }
+                if (lukko2==false){
+                    poistopakka.push(kortti2arvo);
+                    kortti2arvo= null;
+                }
+                else{
+                    pelaajankäsi.push(kortti2arvo);
+                }
+                if (lukko3==false){
+                    poistopakka.push(kortti3arvo);
+                    kortti3arvo= null;
+                }
+                else{
+                    pelaajankäsi.push(kortti3arvo);
+                }
+                if (lukko4==false){
+                    poistopakka.push(kortti4arvo);
+                    kortti4arvo= null;
+                }
+                else{
+                    pelaajankäsi.push(kortti4arvo);
+                }
+
+            }
+
+            
+           //voiton tarkistus mitkä ovat osuneet ja mitä voittoja maksetaaan
+            function voitontarkistus(){
+               
+                //samojen numeroiden tarkistus(pari,tripla,quad)
+                console.log("-------samojen tutkiminen------")
+                /* myArray.forEach(element => {
+                elementCounts[element] = (elementCounts[element] || 0) + 1;
+                });
+                console.log(elementCounts);*/
+
+                //ok legopalanen taas muokattu omaan hommaan toimivaksi
+                voittokäsi.forEach(element => {
+                    duplikaatti[element.arvo] = (duplikaatti[element.arvo] || 0) + 1;
+                });
+
+                console.log(duplikaatti);
+                console.log(typeof(duplikaatti));
+                //nyt tulee lista kuinka monta samaa, tutkitaan kuinka monta paria, onko pari ja 3 tai pelkkä 3/4
+                //kiitos: Elliot Bonneville
+                for(let propName in duplikaatti) {
+                    if(duplikaatti.hasOwnProperty(propName)) {
+                        let propValue = duplikaatti[propName];
+                        // do something with each element here
+                        console.log(propValue);
+                        if (propValue==2){
+                            pari++
+                        }                       
+                        else if (propValue==3){
+                            kolmoset++;
+                        }
+                        else if (propValue==4){
+                            neloset++;
+                        }
+  
+                     }
+                }
+                console.log(`parit:${pari} kolmoset:${kolmoset} neloset:${neloset} `);
+                console.log("-------samojen tutkiminen------");
+                //parien todenta ja voitonmaksu!!
+                if(pari===2){
+                    console.log("KAKSI PARIA!!");
+                    voitot += Number((voittokaksiparia*panos).toFixed(2));
+                    voittoteksti2.innerText= "KAKSI PARIA!!";
+                    playAudio(voittoaudio);
+                }
+                else if(pari===1&&kolmoset===1){
+                    console.log("TÄYSIKÄSI");
+                    voitot += Number((voittotäyskäsi*panos).toFixed(2));
+                    voittoteksti2.innerText= "TÄYSIKÄSI";
+                    playAudio(voittoaudio);
+                }
+                else if(pari===1){
+                    console.log("PARI!!");
+                    voitot += Number((voittopari*panos).toFixed(2));
+                    voittoteksti2.innerText= "PARI!!";
+                    playAudio(voittoaudio);
+                }
+                else if(kolmoset===1){
+                    console.log("OH BOY A TRIPLE");
+                    voitot += Number((voittokolmoset*panos).toFixed(2));
+                    voittoteksti2.innerText= "OH BOY A TRIPLE";
+                    playAudio(voittoaudio);
+                }
+                else if(neloset===1){
+                    console.log("NELOST!!");
+                    voitot += Number((voittoneloset*panos).toFixed(2));
+                    voittoteksti2.innerText= "NELOST!!";
+                    playAudio(voittoaudio);
+                }
+
+
+                //suoran tarkistus en ymmärrää, IHA SAATNANA TYHMÄÄÄ asudohigasiyudg
+                if(voittokäsi[0].arvo==(voittokäsi[1].arvo-1) && voittokäsi[1].arvo==(voittokäsi[2].arvo-1) && voittokäsi[2].arvo==(voittokäsi[3].arvo-1) && voittokäsi[3].arvo==(voittokäsi[4].arvo-1)&& 
+                voittokäsi[0].maa==voittokäsi[1].maa&& voittokäsi[0].maa==voittokäsi[2].maa&& voittokäsi[0].maa==voittokäsi[3].maa&& voittokäsi[0].maa==voittokäsi[4].maa){
+                    console.log("--------VÄRISUORA--- ");
+                    console.log(voittokäsi[0].arvo);
+                    voitot += Number((voittovärisuora*panos).toFixed(2));
+                    voittoteksti2.innerText= "VÄRISUORA";
+                    playAudio(voittoaudio);
+                }
+                else if(voittokäsi[0].arvo==(voittokäsi[1].arvo-1) && voittokäsi[1].arvo==(voittokäsi[2].arvo-1) && voittokäsi[2].arvo==(voittokäsi[3].arvo-1) && voittokäsi[3].arvo==(voittokäsi[4].arvo-1)){
+                    console.log("--------SUORA--- ");
+                    console.log(voittokäsi[0].arvo);
+                    voitot += Number((voittosuora*panos).toFixed(2));
+                    voittoteksti2.innerText= "SUORA";
+                    playAudio(voittoaudio);
+                }
+                else if((voittokäsi[0].arvo+9)==(voittokäsi[1].arvo) && voittokäsi[1].arvo==(voittokäsi[2].arvo-1) && voittokäsi[2].arvo==(voittokäsi[3].arvo-1) && voittokäsi[3].arvo==(voittokäsi[4].arvo-1)){
+                    console.log("--------Suora isolla Ässällä--- ");
+                    voitot += Number((voittosuora*panos).toFixed(2));
+                    voittoteksti2.innerText= "SUORA";
+                    console.log(voittokäsi[0].arvo);
+                    playAudio(voittoaudio);
+                }
+                else if(voittokäsi[0].maa==voittokäsi[1].maa&& voittokäsi[0].maa==voittokäsi[2].maa&& voittokäsi[0].maa==voittokäsi[3].maa&& voittokäsi[0].maa==voittokäsi[4].maa){
+                    console.log("--------väri--- ");
+                    console.log(voittokäsi[0].arvo);
+                    voitot += Number((voittoväri*panos).toFixed(2));
+                    voittoteksti2.innerText= "väri";
+                    playAudio(voittoaudio);
+                }
+                else{
+                    console.log("ei suoria tai värejä");
+                    console.log(`${voittokäsi[0].arvo} ${voittokäsi[1].arvo} ${voittokäsi[2].arvo} ${voittokäsi[3].arvo} ${voittokäsi[4].arvo} `);
+                    console.log(`${voittokäsi[0].arvo} ${voittokäsi[1].arvo-1} ${voittokäsi[2].arvo-2} ${voittokäsi[3].arvo-3} ${voittokäsi[4].arvo-4} `);
+                    console.log(voittokäsi[0].arvo==(voittokäsi[1].arvo-1)==(voittokäsi[2].arvo-2)==(voittokäsi[3].arvo-3)==(voittokäsi[4].arvo-4));
+                    
+                    
+            }
+            
+            console.log("voittopusi"+voitot);
+            voittoteksti.innerText= voitot.toFixed(2);
+
+            }
+
+
+            //funktio nollataan pelikoneen asetukset
+            function pelinnollaus(){
+                pelaajankäsi = [];
+                poistopakka= []
+                lukko0=false;
+                lukko1=false;
+                lukko2=false;
+                lukko3=false;
+                lukko4=false;
+                pari=0;
+                kolmoset=0;
+                neloset=0;
+                voittokäsi=[];
+                piste=0;
+                duplikaatti={};
+
+                nappi0.innerText="Lukitse"
+                nappi1.innerText="Lukitse"
+                nappi2.innerText="Lukitse"
+                nappi3.innerText="Lukitse"
+                nappi4.innerText="Lukitse"
+            }
+
+            //funktio lukitus nappien lukitsemiseen tarvitsenko?
+            function nappiendisabloiminen(){
+                if (kierros ===0){
+                    nappi0.disabled=false;
+                    nappi1.disabled=false;
+                    nappi2.disabled=false;
+                    nappi3.disabled=false;
+                    nappi4.disabled=false;
+                }
+                else{
+                    nappi0.disabled=true;
+                    nappi1.disabled=true;
+                    nappi2.disabled=true;
+                    nappi3.disabled=true;
+                    nappi4.disabled=true;
+                }
+            }
+
+            //funktiot äänen soittamiseen
+            function playAudio(audionimi) {
+                audionimi.play();
+            }
+            function stopAudio(audionimi){
+                audionimi.pause();
+                audionimi.currentTime = 0;
+            }
+
+
+            // Event handlerien asetukset
+
+
+
+            nappi0.addEventListener("click", ()=>{ 
+                console.log("nappia painettu0");
+                if (lukko0===false){
+                nappi0.innerText="Lukittu";
+                lukko0=true;
+                }
+                else{
+                    nappi0.innerText="Lukitse";
+                    lukko0=false;
+                }
+            });
+
+            nappi1.addEventListener("click", ()=>{ 
+                console.log("nappia painettu1");
+                if (lukko1===false){
+                nappi1.innerText="Lukittu";
+                lukko1=true;
+                }
+                else{
+                    nappi1.innerText="Lukitse";
+                    lukko1=false;
+                }
+            });
+            
+            nappi2.addEventListener("click", ()=>{ 
+                console.log("nappia painettu2");
+                if (lukko2===false){
+                nappi2.innerText="Lukittu";
+                lukko2=true;
+                }
+                else{
+                    nappi2.innerText="Lukitse";
+                    lukko2=false;
+                }
+            });
+            
+            nappi3.addEventListener("click", ()=>{ 
+                console.log("nappia painettu3");
+                if (lukko3===false){
+                nappi3.innerText="Lukittu";
+                lukko3=true;
+                }
+                else{
+                    nappi3.innerText="Lukitse";
+                    lukko3=false;
+                }
+            });
+            
+            nappi4.addEventListener("click", ()=>{ 
+                console.log("nappia painettu4");
+                if (lukko4===false){
+                nappi4.innerText="Lukittu";
+                lukko4=true;
+                }
+                else{
+                    nappi4.innerText="Lukitse";
+                    lukko4=false;
+                }
+            });
+            
+            nappijatka.addEventListener("click", ()=>{ 
+               if (syötettyraha-panos>=0||kierros==1){
+                if (kierros==0){console.log("nappia painettuj");
+                muodostakäsi();
+                kortinnäyttö();
+                nappiendisabloiminen();
+                syötettyraha = Number((syötettyraha-panos).toFixed(2));
+                kolikkomäärä.innerText=Number(syötettyraha);
+
+                panosnappi.disabled = true;
+                console.log("Yhden napin toiminnallisuuden testausta");
+                console.log(kierros+"kierros");
+                voittoteksti2.innerText="";
+                kierros++
+                playAudio(bgmaudio);
+                  
+                }
+                else if(kierros==1){
+                stopAudio(bgmaudio);
+                nappiendisabloiminen();
+                kortinpoisto();
+                console.log(pelaajankäsi+"kun kortit poistettu");
+                muodostakäsi();
+                kortinnäyttö();
+                kortinluku();
+                voittokädenteko()
+                voittokäsi.sort(dynamicSortMultiple("arvo", "-maa"));
+                console.log(voittokäsi)
+                voitontarkistus();
+                pelinnollaus();
+                console.log(kierros+"pelattu");
+                console.log("olemme lukitsemisvaiheen ohi");
+                panosnappi.disabled = false;
+                kierros=0;
+                }
+            }
+            });
+
+            //testi nappi myöhemmin 1 nappi hoitaa pelin etenemisen
+            /*nappijatka2.addEventListener("click", ()=>{ 
+                console.log("nappia painettuj2");
+                kortinpoisto();
+                console.log(pelaajankäsi+"kun kortit poistettu");
+                muodostakäsi();
+                kortinnäyttö();
+                kortinluku();
+                voittokädenteko()
+                voittokäsi.sort(dynamicSortMultiple("arvo", "-maa"));
+                console.log(voittokäsi)
+                voitontarkistus();
+                pelinnollaus();
+
+            });*/
+            // panoksen lisääminen nappia painamalla
+            panosnappi.addEventListener("click", ()=>{ 
+                panoksenlisääminen();
+                panosnäyttö.innerText = panos.toFixed(2);
+                voittotaulukko.innerText=`Pari ${((voittopari*panos).toFixed(2))} 
+                Kolmoset ${(voittokolmoset*panos).toFixed(2)} 
+                Kaksiparia ${(voittokaksiparia*panos).toFixed(2)} 
+                Täyskäsi ${(voittotäyskäsi*panos).toFixed(2)} 
+                Neloset ${(voittoneloset*panos).toFixed(2)} 
+                Väri ${(voittoväri*panos).toFixed(2)} 
+                Suora ${(voittosuora*panos).toFixed(2)} 
+                Värisuora ${(voittovärisuora*panos).toFixed(2)}
+            `
+
+            })
+
+
+
+
+            //kolikon syötön tapahtumat
+            kolikkosyöttö.addEventListener("click", ()=>{
+                if (syötettyraha<10 && kierros==0){
+                syötettyraha +=1;
+                kolikkomäärä.innerText = Number(syötettyraha);
+                nappijatka.disabled=false;
+                panosnappi.disabled = false;
+                playAudio(rahaaudio);
+                }
+                else if (syötettyraha<10){
+                syötettyraha +=1;
+                kolikkomäärä.innerText = Number(syötettyraha);
+                playAudio(rahaaudio);
+                }
+            })
+            // Datan haku
+            // (koodi)
+            //kurssissa  aikaisemmin käytetty korttipakan muodostus venttiin
+            for (let maa=0; maa < 4; maa++) {
+                for (let arvo=1; arvo < 14; arvo++) {
+                    let kortti = new Kortti(arvo,maa);
+                    korttipakka.push(kortti);
+                }
+            }
+
+            //korttipakan testaus
+/*
+            console.log(korttipakka);
+            console.log(korttipakka[10].korttitieto());
+
+            //käden muodostuksen testaus
+            console.log("pelaajankäsi luotu");
+
+            console.log(pelaajankäsi);
+*/
+
+            voittotaulukko.innerText=`Pari ${((voittopari*panos).toFixed(2))} 
+            Kolmoset ${(voittokolmoset*panos).toFixed(2)} 
+            Kaksiparia ${(voittokaksiparia*panos).toFixed(2)} 
+            Täyskäsi ${(voittotäyskäsi*panos).toFixed(2)} 
+            Neloset ${(voittoneloset*panos).toFixed(2)} 
+            Väri ${(voittoväri*panos).toFixed(2)} 
+            Suora ${(voittosuora*panos).toFixed(2)} 
+            Värisuora ${(voittovärisuora*panos).toFixed(2)}`
+            
+            
+            //pelin alussa ei tarvita lukitusnäppäimiä initialisoidaan se vaikka täällä
+            nappi0.disabled=true;
+            nappi1.disabled=true;
+            nappi2.disabled=true;
+            nappi3.disabled=true;
+            nappi4.disabled=true;
+            
+            nappijatka.disabled=true;
+            panosnappi.disabled = true;
+            
+            
+            /*
+            const voittopari = 1;
+            const voittokolmoset = 2;
+            const voittokaksiparia = 2;
+            const voittotäyskäsi = 5;
+            const voittoneloset = 3;
+            const voittoväri = 3;
+            const voittosuora = 5;
+            const voittovärisuora = 20;
+            */
+        </script>
+    </body>
+
+</html>
